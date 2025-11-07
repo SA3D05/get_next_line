@@ -1,0 +1,3 @@
+hello world
+this is 1337 school
+try make get next line work with max int number in buffer size

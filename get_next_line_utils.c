@@ -6,7 +6,7 @@
 /*   By: satifi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 18:23:06 by satifi            #+#    #+#             */
-/*   Updated: 2025/11/07 12:22:28 by satifi           ###   ########.fr       */
+/*   Updated: 2025/11/07 15:04:47 by satifi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void ft_bzero(void *s, size_t n)
 	}
 }
 
-char *ft_strjoin(char const *s1, char const *s2)
+char *ft_strjoin(char *s1, char const *s2)
 {
 	size_t s1_l;
 	size_t s2_l;
@@ -90,5 +90,6 @@ char *ft_strjoin(char const *s1, char const *s2)
 	while (s2[i])
 		result[result_i++] = s2[i++];
 	result[result_i] = '\0';
+	free(s1);
 	return (result);
 }

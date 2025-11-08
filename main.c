@@ -1,28 +1,19 @@
-
-
-
 #include <stdio.h>
 #include <fcntl.h>
 #include "get_next_line.h"
 
-
-
 int main(void)
 {
-    int fd;
-    int i;
-    char *str;
+	int fd;
+	char *str;
 
-    fd = open("file.txt", O_RDONLY);
-    i = 1;
-    str = get_next_line(fd);
-    printf("%d: %s",i++ , str);
-    free(str);
-    str = get_next_line(fd);
-    printf("%d: %s",i++ , str);
-    free(str);
-    str = get_next_line(fd);
-    printf("%d: %s",i++ , str);
-    free(str);
-    return 0;
+	fd = open("files_to_read/input.txt", O_RDONLY);
+
+	for (int i = 1; i < 10; i++)
+	{
+		str = get_next_line(fd);
+		printf("LINE [%d]: {%s}\n", i, str);
+		free(str);
+	}
+	return 0;
 }

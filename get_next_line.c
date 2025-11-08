@@ -28,88 +28,93 @@ int has_newline(const char *str)
 	return (0);
 }
 
+// hello \nworld
+//         i
 char *handel_result(char *str)
 {
 	size_t i;
 	size_t j;
-	char *result;
+	char *line;
 
+	if (!str)
+		return (NULL);
 	i = 0;
 	j = 0;
 	while (str[i] && str[i] != '\n')
 		i++;
 	if (str[i] == '\n')
 		i++;
-	result =malloc((i + 1) * sizeof(char));
+	if (i == 0)
+	{
+		free(str);
+		return (NULL);
+	}
+	line = malloc((i + 1) * sizeof(char));
 	while (j < i)
 	{
-		result[j] = str[j];
+		line[j] = str[j];
 		j++;
 	}
-	result[i] = '\0';
+	line[j] = '\0';
 	free(str);
-	return (result);
+	return (line);
 }
 
-void clean_buffer(char *buffer, size_t start)
+char *buffer_filled(char *buffer)
 {
-	size_t i;
-
-	i = 0;
-	while (buffer[start])
-		buffer[i++] = buffer[start++];
-	buffer[start] = '\0';
-}
-
-void buffer_filled(char **str, char *buffer)
-{
-	size_t start;
-	size_t k;
-	size_t size;
+	char *line;
 	size_t i;
 	size_t j;
 
 	i = 0;
 	j = 0;
-	size = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (buffer[i] == '\n')
-		i++;
-	start = i;
 	while (buffer[i])
 	{
-		size += 1;
+		if (buffer[i] == '\n')
+		{
+			i++;
+			break;
+		}
 		i++;
 	}
-	*str = malloc(size + 1);
-	k = start;
-	while (start < i)
-		str[0][j++] = buffer[start++];
-	str[0][j] = '\0';
-	clean_buffer(buffer, k);
+	while (buffer[i])
+		buffer[j++] = buffer[i++];
+	buffer[j] = '\0';
+	line = ft_strdup(buffer);
+	return (line);
 }
 
 char *get_next_line(int fd)
 {
-	static char buffer[BUFFER_SIZE + 1];
-	char *str;
+	static char *buffer;
+	char *line;
 	ssize_t ret;
+	// static int i = 1;
 
-	str = NULL;
-	if (*buffer)
-		buffer_filled(&str, buffer);
-	while (!has_newline(str))
+	line = NULL;
+	if (fd < 0 || BUFFER_SIZE < 1 || BUFFER_SIZE > INT_MAX)
+		return (NULL);
+	if (buffer)
+		line = buffer_filled(buffer);
+	else
+	{
+		buffer = malloc(((size_t)BUFFER_SIZE + (size_t)1) * sizeof(char));
+		if (!buffer)
+			return (NULL);
+	}
+	while (!has_newline(line))
 	{
 		ret = read(fd, buffer, BUFFER_SIZE);
 		if (ret == -1)
 			return (NULL);
 		if (ret == 0)
-			return (handel_result(str));
+			return (handel_result(line));
 		buffer[ret] = '\0';
-		str = ft_strjoin(str, buffer);
-		if (!str)
+
+		line = ft_strjoin(line, buffer);
+		// fprintf(stderr, "GNL %d:\nbuffer: %s|\tline: %s|\n", i++, buffer, line);
+		if (!line)
 			return (NULL);
 	}
-	return (handel_result(str));
+	return (handel_result(line));
 }

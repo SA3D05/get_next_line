@@ -14,17 +14,19 @@
 #define GET_NEXT_LINE_H
 
 #ifndef BUFFER_SIZE
-#define BUFFER_SIZE 5
+#define BUFFER_SIZE 12
 #endif
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 
-void counter();
+char *ft_strdup(const char *s);
 char *get_next_line(int fd);
 char *ft_strjoin(char *s1, char const *s2);
-void ft_bzero(void *s, size_t n);
 size_t ft_strlen(const char *str);
+char *ft_strchr(const char *s, int c);
+char *cat(char *buffer, size_t start);
 
 #endif

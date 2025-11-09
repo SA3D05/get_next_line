@@ -12,59 +12,38 @@
 
 #include "get_next_line.h"
 
-int has_newline(const char *str)
+char	*handel_result(char *line)
 {
-	int i;
+	size_t	i;
+	size_t	j;
+	char	*result;
 
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\n')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-// hello \nworld
-//         i
-char *handel_result(char *str)
-{
-	size_t i;
-	size_t j;
-	char *line;
-
-	if (!str)
-		return (NULL);
+	if (!line || !*line)
+		return (free(line), NULL);
 	i = 0;
 	j = 0;
-	while (str[i] && str[i] != '\n')
+	while (line[i] && line[i] != '\n')
 		i++;
-	if (str[i] == '\n')
+	if (line[i] == '\n')
 		i++;
-	if (i == 0)
-	{
-		free(str);
+	result = malloc((i + 1) * sizeof(char));
+	if (!result)
 		return (NULL);
-	}
-	line = malloc((i + 1) * sizeof(char));
 	while (j < i)
 	{
-		line[j] = str[j];
+		result[j] = line[j];
 		j++;
 	}
-	line[j] = '\0';
-	free(str);
-	return (line);
+	result[j] = '\0';
+	free(line);
+	return (result);
 }
 
-char *buffer_filled(char *buffer)
+char	*get_line(char *buffer)
 {
-	char *line;
-	size_t i;
-	size_t j;
+	char	*line;
+	size_t	i;
+	size_t	j;
 
 	i = 0;
 	j = 0;
@@ -73,7 +52,7 @@ char *buffer_filled(char *buffer)
 		if (buffer[i] == '\n')
 		{
 			i++;
-			break;
+			break ;
 		}
 		i++;
 	}
@@ -84,18 +63,36 @@ char *buffer_filled(char *buffer)
 	return (line);
 }
 
-char *get_next_line(int fd)
+char	*handel_ret(ssize_t ret, char **buffer, char *line)
 {
-	static char *buffer;
-	char *line;
-	ssize_t ret;
-	// static int i = 1;
+	if (ret == -1)
+	{
+		free(*buffer);
+		*buffer = NULL;
+		if (line)
+			free(line);
+		return (NULL);
+	}
+	else
+	{
+		free(*buffer);
+		*buffer = NULL;
+		return (handel_result(line));
+	}
+	return (NULL);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*buffer;
+	char		*line;
+	ssize_t		ret;
 
 	line = NULL;
-	if (fd < 0 || BUFFER_SIZE < 1 || BUFFER_SIZE > INT_MAX)
+	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
 	if (buffer)
-		line = buffer_filled(buffer);
+		line = get_line(buffer);
 	else
 	{
 		buffer = malloc(((size_t)BUFFER_SIZE + (size_t)1) * sizeof(char));
@@ -105,16 +102,10 @@ char *get_next_line(int fd)
 	while (!has_newline(line))
 	{
 		ret = read(fd, buffer, BUFFER_SIZE);
-		if (ret == -1)
-			return (NULL);
-		if (ret == 0)
-			return (handel_result(line));
+		if (ret == -1 || ret == 0)
+			return (handel_ret(ret, &buffer, line));
 		buffer[ret] = '\0';
-
 		line = ft_strjoin(line, buffer);
-		// fprintf(stderr, "GNL %d:\nbuffer: %s|\tline: %s|\n", i++, buffer, line);
-		if (!line)
-			return (NULL);
 	}
 	return (handel_result(line));
 }

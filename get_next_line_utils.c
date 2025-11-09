@@ -12,9 +12,9 @@
 
 #include "get_next_line.h"
 
-size_t ft_strlen(const char *str)
+size_t	ft_strlen(const char *str)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (str[i])
@@ -22,11 +22,27 @@ size_t ft_strlen(const char *str)
 	return (i);
 }
 
-char *ft_strdup(const char *s)
+int	has_newline(const char *str)
 {
-	size_t i;
-	size_t len;
-	char *result;
+	int	i;
+
+	if (!str)
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\n')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_strdup(const char *s)
+{
+	size_t	i;
+	size_t	len;
+	char	*result;
 
 	i = 0;
 	len = ft_strlen(s);
@@ -42,13 +58,13 @@ char *ft_strdup(const char *s)
 	return (result);
 }
 
-char *ft_strjoin(char *s1, char const *s2)
+char	*ft_strjoin(char *s1, char const *s2)
 {
-	size_t s1_l;
-	size_t s2_l;
-	size_t i;
-	size_t result_i;
-	char *result;
+	size_t	s1_l;
+	size_t	s2_l;
+	size_t	i;
+	size_t	result_i;
+	char	*result;
 
 	if (!s1)
 		return (ft_strdup(s2));
@@ -67,49 +83,4 @@ char *ft_strjoin(char *s1, char const *s2)
 	result[result_i] = '\0';
 	free(s1);
 	return (result);
-}
-
-// hello \nworld
-//         i
-
-char *cat(char *buffer, size_t start)
-{
-	size_t i;
-	size_t j;
-	size_t size;
-	char *result;
-
-	i = start;
-	size = 0;
-	j = 0;
-	while (buffer[i] && buffer[i] != '\n')
-	{
-		size += 1;
-		i += 1;
-	}
-	result = malloc(size + 1);
-	if (!result)
-		return (NULL);
-	while (start < i)
-		result[j++] = buffer[start++];
-	result[j] = '\0';
-	return (result);
-}
-
-char *ft_strchr(const char *s, int c)
-{
-	size_t i;
-
-	if (!s)
-		return (NULL);
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == (char)c)
-			return ((char *)&s[i]);
-		i++;
-	}
-	if (s[i] == c)
-		return ((char *)&s[i]);
-	return (NULL);
 }

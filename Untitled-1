@@ -1,0 +1,7 @@
+
+
+
+buffer = "world\0"
+                 i
+line = "world\0"
+result = "hello\n"

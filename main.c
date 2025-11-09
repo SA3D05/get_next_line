@@ -9,11 +9,10 @@ int main(void)
 
 	fd = open("files_to_read/input.txt", O_RDONLY);
 
-	for (int i = 1; i < 10; i++)
+	for (int i = 1; i < 5; i++)
 	{
 		str = get_next_line(fd);
 		printf("LINE [%d]: {%s}\n", i, str);
 		free(str);
 	}
-	return 0;
 }

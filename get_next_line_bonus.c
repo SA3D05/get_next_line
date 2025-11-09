@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: satifi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 18:15:40 by satifi            #+#    #+#             */
-/*   Updated: 2025/11/09 11:37:22 by satifi           ###   ########.fr       */
+/*   Updated: 2025/11/09 11:37:02 by satifi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*handel_result(char *line)
 {
@@ -84,28 +84,28 @@ char	*handel_ret(ssize_t ret, char **buffer, char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[OPEN_MAX];
 	char		*line;
 	ssize_t		ret;
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	if (buffer)
-		line = get_line(buffer);
+	if (buffer[fd])
+		line = get_line(buffer[fd]);
 	else
 	{
-		buffer = malloc(((size_t)BUFFER_SIZE + (size_t)1) * sizeof(char));
-		if (!buffer)
+		buffer[fd] = malloc(((size_t)BUFFER_SIZE + (size_t)1) * sizeof(char));
+		if (!buffer[fd])
 			return (NULL);
 	}
 	while (!has_newline(line))
 	{
-		ret = read(fd, buffer, BUFFER_SIZE);
+		ret = read(fd, buffer[fd], BUFFER_SIZE);
 		if (ret == -1 || ret == 0)
-			return (handel_ret(ret, &buffer, line));
-		buffer[ret] = '\0';
-		line = ft_strjoin(line, buffer);
+			return (handel_ret(ret, &buffer[fd], line));
+		buffer[fd][ret] = '\0';
+		line = ft_strjoin(line, buffer[fd]);
 	}
 	return (handel_result(line));
 }
